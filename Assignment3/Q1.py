@@ -35,13 +35,13 @@ print(ttest_1samp(friends_en,612))
 # the tweets tagged with language Japanese (lang_tweet='ja'). (5 marks)
 tweet_ja = df_tweets[df_tweets.lang_tweet == 'ja']
 friends_ja = tweet_ja['#friends']
-print(ttest_1samp(friends_ja,friends_en.mean()))
+print(ttest_ind(friends_en,friends_ja))
 
 
 # Q 1.3
 # Compare the mean for '#followers' against '#friends 'for tweets tagged with language English (lang_tweet='en').
-mean_follower = df_tweets['#followers'].mean()
-print(ttest_1samp(friends_en,mean_follower))
+follower_en = tweet_en['#followers']
+print(ttest_rel(follower_en,friends_en))
 
 
 
