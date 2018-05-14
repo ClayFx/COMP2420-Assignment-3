@@ -67,6 +67,15 @@ print('Coefficients are: ', coef)
 # Notice that players essentially have the same features as teams, so you can use your model from Q2.1 to perform a prediction.
 # Add this column to the playerLS DataFrame. Call\Name this colum OPW.
 
+df_player = playerLS[['1B', '3B']]
+# bestFeature = stats[['1B', '3B']]
+# y_all = stats.W
+bestFeature = df_bf2002[['1B', '3B']]
+lm.fit(bestFeature, y_before)
+opw_player = lm.predict(df_player)
+playerLS['OPW'] = opw_player
+print(playerLS.head())
+
 
 
 
