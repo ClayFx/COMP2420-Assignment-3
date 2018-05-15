@@ -63,7 +63,6 @@ print('Coefficients are: ', coef)
 
 # Q2.2
 # Compute the OPW for each player based on the average rates in the `playerLS` DataFrame (5 marks)
-#
 # Notice that players essentially have the same features as teams, so you can use your model from Q2.1 to perform a prediction.
 # Add this column to the playerLS DataFrame. Call\Name this colum OPW.
 
@@ -76,6 +75,21 @@ opw_player = lm.predict(df_player)
 playerLS['OPW'] = opw_player
 print(playerLS.head())
 
+# Q2.3
+#Plot and describe the relationship between the median salary (in millions) and the predicted number of wins for a player.
+#Player should be active in the seasons between 2010 and 2012 inclusive, and should have an experience of at least 5 years.
+df_player = playerLS[(playerLS.minYear <= 2010) & (playerLS.maxYear >= 2012) & ((playerLS.maxYear - playerLS.minYear) >= 5)]
+plt.figure(figsize=(10,8))
+ax = plt.subplot(111)
+salary_in_million = df_player.salary / 1000000
+ax.scatter(df_player.OPW, salary_in_million)
+ax.set_xlabel("OPW", fontsize=22)
+ax.set_ylabel("Median Salary(in millions)",fontsize=22)
+ax.set_title("Relationship between the median salary and the OPW for a player",fontsize=24)
+ax.set_xticklabels(ax.get_xticks(),fontsize=14)
+ax.set_yticklabels(ax.get_yticks(),fontsize=14)
+sns.despine()
+plt.show()
 
 
 
