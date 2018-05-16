@@ -42,7 +42,7 @@ all_data = ['1B', '2B', '3B', 'HR', 'BB']
 lm = LinearRegression(normalize=True)
 y_before = df_bf2002.W
 y_after = df_af2002.W
-smallestK2 = 1000
+biggestK2 = 0
 bestOne = 0
 combinations = list()
 coef = list()
@@ -53,10 +53,10 @@ for combi in combinations:
     x_before = df_bf2002[list(combi)]
     lm.fit(x_before, y_before)
     thisK2 = lm.score(df_af2002[list(combi)],y_after)
-    if thisK2 < smallestK2:
+    if thisK2 > biggestK2:
         bestOne = combinations.index((combi))
         # lm.fit(x_before, y_before)
-        smallestK2 = thisK2
+        biggestK2 = thisK2
         coef = lm.coef_
 print(combinations[bestOne])
 print('Coefficients are: ', coef)
@@ -66,10 +66,10 @@ print('Coefficients are: ', coef)
 # Notice that players essentially have the same features as teams, so you can use your model from Q2.1 to perform a prediction.
 # Add this column to the playerLS DataFrame. Call\Name this colum OPW.
 
-df_player = playerLS[['1B', '3B']]
+df_player = playerLS[['1B', '2B', 'HR', 'BB']]
 # bestFeature = stats[['1B', '3B']]
 # y_all = stats.W
-bestFeature = df_bf2002[['1B', '3B']]
+bestFeature = df_bf2002[['1B', '2B', 'HR', 'BB']]
 lm.fit(bestFeature, y_before)
 opw_player = lm.predict(df_player)
 playerLS['OPW'] = opw_player
