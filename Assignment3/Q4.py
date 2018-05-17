@@ -38,8 +38,7 @@ def kmeans(X, n_cluster, random_seed=2, n_init=100):
     centers = np.zeros((n_cluster, X.shape[1]))
     labels = np.zeros_like(X)
     # YOUR CODE HERE
-
-    centers = randCent(X, n_cluster)  # 初始化质心，设置k=4
+    centers = randCent(X, n_cluster,random_seed)  # 初始化质心，设置k=4
     labels = minDistance(X, centers)  # 第一次聚类迭代
     k = 1
     while k <= n_init:  # 当计数器大于n_init时，迭代结束
@@ -83,9 +82,10 @@ def getCentroids(clusterDict):
     return np.array(centroidList).tolist()
 
 
-def randCent(dataSet, k):
+def randCent(dataSet, k, random_seed):
     # 初始化k个质心，随机获取
     n = np.shape(dataSet)[1]
+    np.random.seed(random_seed)
     centroids = np.mat(np.zeros((k,n)))
     for j in range(n):
         minJ = min(dataSet[:,j])
@@ -111,7 +111,7 @@ def showCluster(centroidList, clusterDict):
 
 
 ## change the parameters of the function call to test your implementation
-centers, labels = kmeans(X, n_cluster=4, random_seed=4, n_init=300)
+centers, labels = kmeans(X, n_cluster=2, random_seed=2, n_init=300)
 
 print(centers, labels)
 
