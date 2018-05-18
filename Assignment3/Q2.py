@@ -42,7 +42,7 @@ all_data = ['1B', '2B', '3B', 'HR', 'BB']
 lm = LinearRegression(normalize=True)
 y_before = df_bf2002.W
 y_after = df_af2002.W
-biggestK2 = 0
+biggestR2 = 0
 bestOne = 0
 combinations = list()
 coef = list()
@@ -52,11 +52,11 @@ for i in range(1, 6, 1):
 for combi in combinations:
     x_before = df_bf2002[list(combi)]
     lm.fit(x_before, y_before)
-    thisK2 = lm.score(df_af2002[list(combi)],y_after)
-    if thisK2 > biggestK2:
+    thisR2 = lm.score(df_af2002[list(combi)],y_after)
+    if thisR2 > biggestR2:
         bestOne = combinations.index((combi))
         # lm.fit(x_before, y_before)
-        biggestK2 = thisK2
+        biggestR2 = thisR2
         coef = lm.coef_
 print(combinations[bestOne])
 print('Coefficients are: ', coef)
@@ -82,12 +82,14 @@ df_player = playerLS[(playerLS.minYear <= 2010) & (playerLS.maxYear >= 2012) & (
 plt.figure(figsize=(10,8))
 ax = plt.subplot(111)
 salary_in_million = df_player.salary / 1000000
-ax.scatter(df_player.OPW, salary_in_million)
-ax.set_xlabel("OPW", fontsize=22)
-ax.set_ylabel("Median Salary(in millions)",fontsize=22)
+ax.scatter(salary_in_million, df_player.OPW)
+ax.set_xlabel("Median Salary(in millions)", fontsize=22)
+ax.set_ylabel("OPW",fontsize=22)
 ax.set_title("Relationship between the median salary and the OPW for a player",fontsize=24)
 ax.set_xticklabels(ax.get_xticks(),fontsize=14)
 ax.set_yticklabels(ax.get_yticks(),fontsize=14)
+k, b = np.polyfit(salary_in_million, df_player.OPW, 1)
+ax.plot(salary_in_million, k*salary_in_million + b, '-')
 sns.despine()
 plt.show()
 
