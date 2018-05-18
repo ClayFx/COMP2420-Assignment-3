@@ -37,6 +37,11 @@ print(entropy_rain)
 
 # Q 5.3
 # Calculate and specify the information gain of the attribute you chose to split on in the previous question.
+
+# IG(X|Y) = H(X) - H(X|Y)
+# H(X) = sum(-p(x)*log(p(x),base=2))
+# H(X|Y) = sum(p(X|Y=y)*H(X|Y=y))
+
 IG_rain_cloudy = 0.40672
 IG_rain_humidity = 0.14654
 IG_rain_UV = 0.14654
