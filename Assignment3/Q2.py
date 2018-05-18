@@ -12,6 +12,8 @@ from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from scipy.stats import ttest_ind, ttest_rel,ttest_1samp
 from sklearn.preprocessing import scale
 
+import random
+
 import itertools
 
 plt.style.use('seaborn-notebook')
@@ -93,7 +95,65 @@ ax.plot(salary_in_million, k*salary_in_million + b, '-')
 sns.despine()
 plt.show()
 
+# Q2.4
 
+# YOUR CODE HERE
+# create cost-effective column
+# calculate by salary/opw
+# which means how much it cost for each win
+d = playerLS.copy(deep=True)
+d['ce']=d['salary']/d['OPW']
+# number of item to take
+# take the  'numberofloop' most cost-effective item for iteration later
+numberofloop=4
+poss=['C','1B','2B','3B','SS','OF']
+# tlist store index and salary as tuple
+# tdict store index as key and (salary,OPW) as value
+tdict={}
+tlist=[]
+counter=0
+# initialized tdict and tlist
+for p in poss:
+    tlist.append([])
+    if p!='OF':
+        for i in range(1,numberofloop+1):
+            tlist[counter].append((d[(d['POS']==p)&(d.index.isin(tdict.keys())==False)].sort_values('OPW').tail(15).sort_values('ce').head(i).tail(1).index.values[0],d[(d['POS']==p)&(d.index.isin(tdict.keys())==False)].sort_values('OPW').tail(15).sort_values('ce').head(i).tail(1).salary.values[0]))
+            tdict[d[(d['POS']==p)&(d.index.isin(tdict.keys())==False)].sort_values('OPW').tail(15).sort_values('ce').head(i).tail(1).index.values[0]]=(d[(d['POS']==p)&(d.index.isin(tdict.keys())==False)].sort_values('OPW').tail(15).sort_values('ce').head(i).tail(1).salary.values[0],d[(d['POS']==p)&(d.index.isin(tdict.keys())==False)].sort_values('OPW').tail(15).sort_values('ce').head(i).tail(1).OPW.values[0])
+    else:
+        for i in range(1,numberofloop*4+1):
+            tlist[counter].append((d[(d['POS']==p)&(d.index.isin(tdict.keys())==False)].sort_values('OPW').tail(15).sort_values('ce').head(i).tail(1).index.values[0],d[(d['POS']==p)&(d.index.isin(tdict.keys())==False)].sort_values('OPW').tail(15).sort_values('ce').head(i).tail(1).salary.values[0]))
+            tdict[d[(d['POS']==p)&(d.index.isin(tdict.keys())==False)].sort_values('OPW').tail(15).sort_values('ce').head(i).tail(1).index.values[0]]=(d[(d['POS']==p)&(d.index.isin(tdict.keys())==False)].sort_values('OPW').tail(15).sort_values('ce').head(i).tail(1).salary.values[0],d[d['POS']==p].sort_values('OPW').tail(15).sort_values('ce').head(i).tail(1).OPW.values[0])
+    counter=counter+1
+# initialized 2 combine list, first use for first 5 position and second use for position OF
+combine1=list(itertools.product(tlist[0],tlist[1],tlist[2],tlist[3],tlist[4]))
+combine2=list(itertools.combinations(tlist[5],4))
+# comparator to find the max OPW
+maxwin=0
+# will store the index of the maxwin as list
+maxcombine=None
+limit=25000000.0
+# loop through every possible combinations
+for q in combine1:
+    for w in combine2:
+        wins=sum([pair[1] for pair in q+w])
+        if (wins<limit) & (wins>maxwin):
+            maxwin=wins
+            maxcombine=list(q+w)
+print("After first iteration get total salary of: ",str(sum([pair[1] for pair in maxcombine])))
+print("After first method get total OPW:",str(d[d.index.isin([pair[0] for pair in maxcombine])]['OPW'].sum()))
+print("After first method get average OPW:",str(d[d.index.isin([pair[0] for pair in maxcombine])]['OPW'].sum()/9))
+for i in range(1,50):
+    r=random.randint(0,8)
+    pos=d[d.index==maxcombine[r][0]]['POS'].values[0]
+    salary=limit-sum([q[1] for q in maxcombine])+maxcombine[r][1]
+    maxcombine.pop(r)
+    maxcombine.append((d[(d['POS']==pos)&(d['salary']<=salary)&(d.index.isin([pair[0] for pair in maxcombine])==False)].sort_values('OPW').tail(1).index.values[0],d[(d['POS']==pos)&(d['salary']<=salary)&(d.index.isin([pair[0] for pair in maxcombine])==False)].sort_values('OPW').tail(1).salary.values[0]))
+
+print("After LNS get total salary of :",str(sum([pair[1] for pair in maxcombine])))
+print("After LNS get total OPW of :",str(d[d.index.isin([pair[0] for pair in maxcombine])]['OPW'].sum()))
+print("After LNS get average OPW of :",str(d[d.index.isin([pair[0] for pair in maxcombine])]['OPW'].sum()/9))
+print(d[d.index.isin([pair[0] for pair in maxcombine])][['playerID','salary','POS','OPW']])
+# for i in range(0,len(combine))
 
 
 

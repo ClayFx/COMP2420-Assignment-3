@@ -38,13 +38,13 @@ def kmeans(X, n_cluster, random_seed=2, n_init=100):
     centers = np.zeros((n_cluster, X.shape[1]))
     labels = np.zeros_like(X)
     # YOUR CODE HERE
-    centers = randCent(X, n_cluster,random_seed)  # 初始化质心，设置k=4
-    labels = minDistance(X, centers)  # 第一次聚类迭代
+    centers = randCent(X, n_cluster,random_seed)  # init
+    labels = minDistance(X, centers)  # the first
     k = 1
-    while k <= n_init:  # 当计数器大于n_init时，迭代结束
-        centers = getCentroids(labels)  # 获得新的质心
-        labels = minDistance(X, centers)  # 新的聚类结果
-        print('***** 第%d次迭代 *****' % k)
+    while k <= n_init:
+        centers = getCentroids(labels)  # get the center
+        labels = minDistance(X, centers)  # the new result
+        print('***** the %dth iteration *****' % k)
         k += 1
     return centers, labels
 
@@ -54,36 +54,36 @@ def minDistance(dataSet, centroidList):
     # 并将item加入相应的簇类中
     clusterDict = dict()  # 用dict来保存簇类结果
     for item in dataSet:
-        vec1 = np.array(item)  # 转换成array形式
-        flag = 0  # 簇分类标记，记录与相应簇距离最近的那个簇
-        minDis = float("inf")  # 初始化为最大值
+        vec1 = np.array(item)
+        flag = 0  # mark the nearest cluster
+        minDis = float("inf")
 
         for i in range(len(centroidList)):
             vec2 = np.array(centroidList[i])
-            distance = calcuDistance(vec1, vec2)  # 计算相应的欧式距离
+            distance = calcuDistance(vec1, vec2)
             if distance < minDis:
                 minDis = distance
-                flag = i  # 循环结束时，flag保存的是与当前item距离最近的那个簇标记
+                flag = i  # record the nearest cluster
 
-        if flag not in clusterDict.keys():  # 簇标记不存在，进行初始化
+        if flag not in clusterDict.keys():  # the cluster flag does not exist, and do the initialization
             clusterDict[flag] = list()
             # print flag, item
-        clusterDict[flag].append(item)  # 加入相应的类别中
-    return clusterDict  # 返回新的聚类结果
+        clusterDict[flag].append(item)  # add it into the corresponding cluster
+    return clusterDict
 
 
 def getCentroids(clusterDict):
-    # 得到k个质心
+    # get k center
     centroidList = list()
     for key in clusterDict.keys():
-        centroid = np.mean(np.array(clusterDict[key]), axis=0)  # 计算每列的均值，即找到质心
+        centroid = np.mean(np.array(clusterDict[key]), axis=0)  # calculate the mean to get the center
         # print key, centroid
         centroidList.append(centroid)
     return np.array(centroidList).tolist()
 
 
 def randCent(dataSet, k, random_seed):
-    # 初始化k个质心，随机获取
+    # init k center
     n = np.shape(dataSet)[1]
     np.random.seed(random_seed)
     centroids = np.mat(np.zeros((k,n)))
@@ -94,18 +94,18 @@ def randCent(dataSet, k, random_seed):
     return centroids
 
 def calcuDistance(vec1, vec2):
-    # 计算向量vec1和向量vec2之间的欧氏距离
+    # calculate the distance of two vectors
     return np.sqrt(np.sum(np.square(vec1 - vec2)))
 
 
 def showCluster(centroidList, clusterDict):
-    # 展示聚类结果
-    colorMark = ['or', 'ob', 'og', 'ok', 'oy', 'ow']  # 不同簇类的标记 'or' --> 'o'代表圆，'r'代表red，'b':blue
-    centroidMark = ['dr', 'db', 'dg', 'dk', 'dy', 'dw']  # 质心标记 同上'd'代表棱形
+    # show the result
+    colorMark = ['or', 'ob', 'og', 'ok', 'oy', 'ow']
+    centroidMark = ['dr', 'db', 'dg', 'dk', 'dy', 'dw']
     for key in clusterDict.keys():
-        plt.plot(centroidList[key][0], centroidList[key][1], centroidMark[key], markersize=12)  # 画质心点
+        plt.plot(centroidList[key][0], centroidList[key][1], centroidMark[key], markersize=12)
         for item in clusterDict[key]:
-            plt.plot(item[0], item[1], colorMark[key])  # 画簇类下的点
+            plt.plot(item[0], item[1], colorMark[key])
     plt.show()
 
 
@@ -115,4 +115,4 @@ centers, labels = kmeans(X, n_cluster=2, random_seed=2, n_init=300)
 
 print(centers, labels)
 
-showCluster(centers, labels)  # 展示聚类结果
+showCluster(centers, labels)
